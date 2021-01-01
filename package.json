@@ -4,7 +4,7 @@
   "description": "File based kev value datastore",
   "main": "index.js",
   "scripts": {
-    "start" : "npm run lite",
+    "start" : "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lite": "lite-server"
   },
