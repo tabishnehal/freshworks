@@ -1,6 +1,8 @@
 const express = require('express') 
 const bodyParser = require('body-parser') 
 const repo = require('./repository') 
+const showRecordTemplet = require('./showRecord')
+const {recordInfo} = require('./fetchRecord')
 
 const app = express() 
 
@@ -21,7 +23,7 @@ res.send(`
 		</div> 
 		<input type='text' name='key'
 					placeholder='Enter key'
-		for='key'> 
+		for='key' required> 
 		</div> 
 
 		<div> 
@@ -30,7 +32,7 @@ res.send(`
 		</div> 
 		<input type='text' name='value'
 					placeholder='Enter value'
-		for='value'> 
+		for='value' required> 
 		</div> 
 	
 		<div> 
@@ -53,9 +55,29 @@ console.log(`Added Record :
 	${JSON.stringify(addedRecord, null, 4)}`) 
 
 res.send("Information added to the"
-		+ " database successfully.") 
+        + " database successfully.")
 }) 
 
+// Home page 
+app.get('/', async (req, res) => { 
+    const records = await repo.getAllRecords() 
+    res.send(showRecordTemplet(records)) 
+  }) 
+    
+  // Post route to delete record 
+  app.post('/delete/:key', async (req, res) => { 
+    const key = req.params.key 
+    const temp = await repo.delete(key) 
+    res.redirect('/') 
+  })
+
+  app.post('/read/:key', async (req, res) => { 
+    const key = req.params.key 
+    const record =  
+      await repo.findByKey(key) 
+    
+    res.send(recordInfo(record)) 
+  }) 
 // Server setup 
 app.listen(port, () => { 
 console.log(`Server start on port ${port}`) 
